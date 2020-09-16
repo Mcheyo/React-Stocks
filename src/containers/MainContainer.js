@@ -5,12 +5,22 @@ import SearchBar from '../components/SearchBar'
 
 class MainContainer extends Component {
   state = { 
-    stocks: []
+    stocks: [], 
+    portfolioStocks: []
   }
   componentDidMount(){ 
     fetch(`http://localhost:3000/stocks`)
     .then(res => res.json())
     .then(stocksArray => this.setState({stocks: stocksArray }))
+  }
+  addStock = id => { 
+    let newStock = this.state.stocks.find(stock => stock.id === id)
+    this.setState({portfolioStocks: [...this.state.portfolioStocks, newStock]})
+  }
+
+  removeStock = id => { 
+   let newPortfolio = this.state.portfolioStocks.filter(stock => stock.id !== id)
+   this.setState({portfolioStocks: newPortfolio})
   }
 
   render() {
@@ -21,12 +31,12 @@ class MainContainer extends Component {
           <div className="row">
             <div className="col-8">
 
-              <StockContainer stocks={this.state.stocks}/>
+              <StockContainer stocks={this.state.stocks} addStock={this.addStock}/>
 
             </div>
             <div className="col-4">
 
-              <PortfolioContainer/>
+              <PortfolioContainer myStocks ={this.state.portfolioStocks} removeStock={this.removeStock}/>
 
             </div>
           </div>
